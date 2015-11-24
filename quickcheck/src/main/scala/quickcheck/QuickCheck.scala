@@ -20,12 +20,15 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
   }
 
 
+
+
+
+  val emptyCons = const(empty)
+
   lazy val genHeap: Gen[H] = for {
-
-    isNode <- arbitrary[Boolean]
-    h <- if(isNode)
-
-  } yield h
+    a <- arbitrary[A]
+    h <- oneOf(emptyCons, genHeap)
+  } yield insert(a,h)
 
   implicit lazy val arbHeap: Arbitrary[H] = Arbitrary(genHeap)
 
