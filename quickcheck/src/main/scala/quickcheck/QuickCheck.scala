@@ -41,6 +41,7 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
   }
 
   property("sortedseq") = forAll { (h: H, l: List[A]) =>
+<<<<<<< HEAD
 
     val h = insertList(empty,l)
     val a = findMin(h)
@@ -71,8 +72,34 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
 
     }else true
   }
+=======
+
+    val h = insertList(empty,l);
+    val a = findMin(h)
+
+    isSequenced(deleteMin(h), a)
+
+  }
 
 
+  def insertList(h: H, l: List[A]): H = l match {
+    case List() => h
+    case x :: xs => insertList(insert(x,h), xs)
+  }
+
+  def isSequenced(h: H, lastMin: A): Boolean = {
+
+    if(!isEmpty(h)){
+
+      val curMin = findMin(h)
+
+      if(lastMin > curMin) false
+      else isSequenced(deleteMin(h), curMin)
+>>>>>>> f0f2032be5bd36220fc7d0227dbe34e8280d1599
+
+    }else true
+
+  }
 
   val emptyCons = const(empty)
 
@@ -83,8 +110,16 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
     h <- emptyCons
   } yield insert(a,h)
 
+
+  lazy val genListA = Gen.containerOfN[List,A](10, arbitrary[A])
+
+
   implicit lazy val arbHeap: Arbitrary[H] = Arbitrary(genHeap)
 
   implicit lazy val arbListA: Arbitrary[List[A]] = Arbitrary(genListA)
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> f0f2032be5bd36220fc7d0227dbe34e8280d1599
 }
