@@ -858,6 +858,87 @@ var $h_Lcalculator_Expr = (function() {
 });
 $h_Lcalculator_Expr.prototype = $c_Lcalculator_Expr.prototype;
 /** @constructor */
+var $c_Lcalculator_Polynomial$ = (function() {
+  $c_O.call(this)
+});
+$c_Lcalculator_Polynomial$.prototype = new $h_O();
+$c_Lcalculator_Polynomial$.prototype.constructor = $c_Lcalculator_Polynomial$;
+/** @constructor */
+var $h_Lcalculator_Polynomial$ = (function() {
+  /*<skip>*/
+});
+$h_Lcalculator_Polynomial$.prototype = $c_Lcalculator_Polynomial$.prototype;
+$c_Lcalculator_Polynomial$.prototype.computeSolutions__Lcalculator_Signal__Lcalculator_Signal__Lcalculator_Signal__Lcalculator_Signal__Lcalculator_Signal = (function(a, b, c, delta) {
+  var mb = (-$uD(b.apply__O()));
+  var a$1 = $uD(delta.apply__O());
+  var this$4 = $uD($g["Math"]["sqrt"](a$1));
+  if ((this$4 !== this$4)) {
+    var sqr\u0394 = 0.0
+  } else {
+    var a$2 = $uD(delta.apply__O());
+    var sqr\u0394 = $uD($g["Math"]["sqrt"](a$2))
+  };
+  var m = ((mb - sqr\u0394) / (2 * $uD(a.apply__O())));
+  var p = ((mb + sqr\u0394) / (2 * $uD(a.apply__O())));
+  $m_Lcalculator_Signal$();
+  var expr = new $c_sjsr_AnonFunction0().init___sjs_js_Function0((function(m$1, p$1) {
+    return (function() {
+      var array = [m$1, p$1];
+      if (($uI(array["length"]) === 0)) {
+        var jsx$1 = $m_sci_Set$EmptySet$()
+      } else {
+        var b$1 = new $c_scm_SetBuilder().init___sc_Set($m_sci_Set$EmptySet$());
+        matchEnd4: {
+          var i = 0;
+          var len = $uI(array["length"]);
+          while ((i < len)) {
+            var index = i;
+            var arg1 = array[index];
+            b$1.$$plus$eq__O__scm_SetBuilder(arg1);
+            i = ((1 + i) | 0)
+          };
+          break matchEnd4
+        };
+        var jsx$1 = $as_sc_GenTraversable(b$1.elems$1)
+      };
+      return $as_sci_Set(jsx$1)
+    })
+  })(m, p));
+  return new $c_Lcalculator_Signal().init___F0(expr)
+});
+$c_Lcalculator_Polynomial$.prototype.computeDelta__Lcalculator_Signal__Lcalculator_Signal__Lcalculator_Signal__Lcalculator_Signal = (function(a, b, c) {
+  if (($uD(a.apply__O()) === 0)) {
+    $m_Lcalculator_Signal$();
+    var expr = new $c_sjsr_AnonFunction0().init___sjs_js_Function0((function() {
+      return 0.0
+    }));
+    return new $c_Lcalculator_Signal().init___F0(expr)
+  } else {
+    var \u0394 = (($uD(b.apply__O()) * $uD(b.apply__O())) - ((4 * $uD(a.apply__O())) * $uD(c.apply__O())));
+    $m_Lcalculator_Signal$();
+    var expr$1 = new $c_sjsr_AnonFunction0().init___sjs_js_Function0((function(\u0394$1) {
+      return (function() {
+        return \u0394$1
+      })
+    })(\u0394));
+    return new $c_Lcalculator_Signal().init___F0(expr$1)
+  }
+});
+var $d_Lcalculator_Polynomial$ = new $ClassTypeData({
+  Lcalculator_Polynomial$: 0
+}, false, "calculator.Polynomial$", {
+  Lcalculator_Polynomial$: 1,
+  O: 1
+});
+$c_Lcalculator_Polynomial$.prototype.$classData = $d_Lcalculator_Polynomial$;
+var $n_Lcalculator_Polynomial$ = (void 0);
+var $m_Lcalculator_Polynomial$ = (function() {
+  if ((!$n_Lcalculator_Polynomial$)) {
+    $n_Lcalculator_Polynomial$ = new $c_Lcalculator_Polynomial$().init___()
+  };
+  return $n_Lcalculator_Polynomial$
+});
+/** @constructor */
 var $c_Lcalculator_Signal = (function() {
   $c_O.call(this);
   this.calculator$Signal$$myExpr$1 = null;
@@ -5604,10 +5685,28 @@ $c_Lcalculator_CalculatorUI$.prototype.setup2ndOrderPolynomial__V = (function() 
     };
     throw new $c_s_MatchError().init___O(doubleValues)
   };
-  $as_Lcalculator_Signal(x$1_$_$$und1$1);
-  $as_Lcalculator_Signal(x$1_$_$$und2$1);
-  $as_Lcalculator_Signal(x$1_$_$$und3$1);
-  $m_s_Predef$().$$qmark$qmark$qmark__sr_Nothing$()
+  var a$2 = $as_Lcalculator_Signal(x$1_$_$$und1$1);
+  var b$2$1 = $as_Lcalculator_Signal(x$1_$_$$und2$1);
+  var c$2 = $as_Lcalculator_Signal(x$1_$_$$und3$1);
+  var delta = $m_Lcalculator_Polynomial$().computeDelta__Lcalculator_Signal__Lcalculator_Signal__Lcalculator_Signal__Lcalculator_Signal(a$2, b$2$1, c$2);
+  var deltaArea = this.elementById__T__sjs_js_Any("polyrootdelta");
+  $m_Lcalculator_Signal$();
+  var expr = new $c_sjsr_AnonFunction0().init___sjs_js_Function0((function(delta$1, deltaArea$1) {
+    return (function() {
+      deltaArea$1["textContent"] = $objectToString(delta$1.apply__O())
+    })
+  })(delta, deltaArea));
+  new $c_Lcalculator_Signal().init___F0(expr);
+  var solutions = $m_Lcalculator_Polynomial$().computeSolutions__Lcalculator_Signal__Lcalculator_Signal__Lcalculator_Signal__Lcalculator_Signal__Lcalculator_Signal(a$2, b$2$1, c$2, delta);
+  var solutionsArea = this.elementById__T__sjs_js_Any("polyrootsolutions");
+  $m_Lcalculator_Signal$();
+  var expr$1 = new $c_sjsr_AnonFunction0().init___sjs_js_Function0((function(solutions$1, solutionsArea$1) {
+    return (function() {
+      var this$15 = $as_sc_SetLike(solutions$1.apply__O());
+      solutionsArea$1["textContent"] = $s_sc_TraversableLike$class__toString__sc_TraversableLike__T(this$15)
+    })
+  })(solutions, solutionsArea));
+  new $c_Lcalculator_Signal().init___F0(expr$1)
 });
 $c_Lcalculator_CalculatorUI$.prototype.parseSimple$1__p1__T__Lcalculator_Expr = (function(text) {
   var this$2 = new $c_sci_StringOps().init___T(text);
@@ -14957,6 +15056,18 @@ var $isArrayOf_sc_LinearSeqOptimized = (function(obj, depth) {
 });
 var $asArrayOf_sc_LinearSeqOptimized = (function(obj, depth) {
   return (($isArrayOf_sc_LinearSeqOptimized(obj, depth) || (obj === null)) ? obj : $throwArrayCastException(obj, "Lscala.collection.LinearSeqOptimized;", depth))
+});
+var $is_sc_SetLike = (function(obj) {
+  return (!(!((obj && obj.$classData) && obj.$classData.ancestors.sc_SetLike)))
+});
+var $as_sc_SetLike = (function(obj) {
+  return (($is_sc_SetLike(obj) || (obj === null)) ? obj : $throwClassCastException(obj, "scala.collection.SetLike"))
+});
+var $isArrayOf_sc_SetLike = (function(obj, depth) {
+  return (!(!(((obj && obj.$classData) && (obj.$classData.arrayDepth === depth)) && obj.$classData.arrayBase.ancestors.sc_SetLike)))
+});
+var $asArrayOf_sc_SetLike = (function(obj, depth) {
+  return (($isArrayOf_sc_SetLike(obj, depth) || (obj === null)) ? obj : $throwArrayCastException(obj, "Lscala.collection.SetLike;", depth))
 });
 /** @constructor */
 var $c_sc_AbstractIterable = (function() {
