@@ -1,11 +1,9 @@
-import scala.language.postfixOps
-import scala.io.StdIn
-import scala.util._
-import scala.util.control.NonFatal
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
 import scala.concurrent.duration._
-import ExecutionContext.Implicits.global
-import scala.async.Async.{async, await}
+import scala.io.StdIn
+import scala.language.postfixOps
+import scala.util._
 
 /** Contains basic data types, data structures and `Future` extensions.
  */
@@ -32,7 +30,12 @@ package object nodescala {
      *  The values in the list are in the same order as corresponding futures `fs`.
      *  If any of the futures `fs` fails, the resulting future also fails.
      */
-    def all[T](fs: List[Future[T]]): Future[List[T]] = ???
+    def all[T](fs: List[Future[T]]): Future[List[T]] = {
+      fs match {
+        case Nil => Future(Nil)
+        case (f::fs) => f.flatMap(t => all(fs).flatMap(ts => Future(t::ts)))
+      }
+    }
     /** Given a list of futures `fs`, returns the future holding the value of the future from `fs` that completed first.
      *  If the first completing future in `fs` fails, then the result is failed as well.
      *
@@ -42,7 +45,11 @@ package object nodescala {
      *
      *  may return a `Future` succeeded with `1`, `2` or failed with an `Exception`.
      */
-    def any[T](fs: List[Future[T]]): Future[T] = ???
+    def any[T](fs: List[Future[T]]): Future[T] = {
+      val p = Promise[T]()
+      fs.map(f => f.onComplete(p.tryComplete(_)))
+      p.future
+    }
 
     /** Returns a future with a unit value that is completed after time `t`.
      */
