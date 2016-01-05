@@ -47,7 +47,7 @@ package object nodescala {
      */
     def any[T](fs: List[Future[T]]): Future[T] = {
       val p = Promise[T]()
-      fs.map(f => f.onComplete(p.tryComplete(_)))
+      fs.foreach(f => f.onComplete { p.tryComplete(_) })
       p.future
     }
 
