@@ -64,20 +64,26 @@ class NodeScalaSuite extends FunSuite {
 
   test("Futures should be cancelled") {
 
+    var isCancelled = false
+
     val working = Future.run() { ct =>
       Future {
         while (ct.nonCancelled) {
-          println("working")
+          print(".")
         }
         println("done")
+        isCancelled = ct.isCancelled
       }
     }
 
-//    Future.delay(5 seconds) onSuccess {
-//      case _ => working.unsubscribe()
-//    }
+    Await.ready(Future{
 
-      Await.result(working, 5 seconds)
+      working.unsubscribe()
+
+    }, 500 millis)
+
+    assert(isCancelled)
+
   }
 
 
