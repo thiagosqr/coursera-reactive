@@ -1,5 +1,11 @@
 package nodescala
 
+import java.io.{OutputStream, IOException}
+import java.net.InetSocketAddress
+import java.util.concurrent.{Executors, Executor}
+
+import com.sun.net.httpserver.{HttpServer, HttpExchange, HttpHandler}
+
 import scala.language.postfixOps
 import scala.concurrent._
 import scala.concurrent.duration._
@@ -13,6 +19,7 @@ object Main {
     //    and have the response return headers of the request
     val myServer = new NodeScala.Default(8191)
     val myServerSubscription = myServer.start("/test") { request =>
+      System.out.println("Processing request with: "+Thread.currentThread().getName())
       for (kv <- request.iterator) yield (kv + "\n").toString
     }
 
@@ -25,18 +32,23 @@ object Main {
     // TO IMPLEMENT
     // 3. create a future that completes after 20 seconds
     //    and continues with a `"Server timeout!"` message
-    val timeOut: Future[String] = ???
+    val timeOut: Future[String] =
+      Future.delay(20 seconds).continueWith(t => "Server Timeout")
+
 
     // TO IMPLEMENT
     // 4. create a future that completes when either 20 seconds elapse
     //    or the user enters some text and presses ENTER
-    val terminationRequested: Future[String] = ???
+    val terminationRequested: Future[String] = {
+      Future.any(List(userInterrupted, timeOut))
+    }
 
     // TO IMPLEMENT
     // 5. unsubscribe from the server
     terminationRequested onSuccess {
-      case msg => ???
+      case msg => myServerSubscription.unsubscribe()
     }
   }
+
 
 }

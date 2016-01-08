@@ -13,6 +13,7 @@ import com.sun.net.httpserver.{HttpExchange, HttpHandler, HttpServer}
 import java.net.InetSocketAddress
 
 import scala.io.StdIn
+import scala.util.Success
 
 /** Contains utilities common to the NodeScala© framework.
  */
@@ -52,27 +53,31 @@ trait NodeScala {
    *  @return               a subscription that can stop the server and all its asynchronous operations *entirely*
    */
   def start(relativePath: String)(handler: Request => Response): Subscription = {
+
     val listener = createListener(relativePath)
     val listenerSubscription = listener.start()
 
-    Future.run(){ct =>
+    Future.run(){ ct =>
 
-      Future{
+      def runFuture(f: Future[Unit]): Future[Unit] = {
+        f.continue(t => if(ct.nonCancelled) {
 
-        while(ct.nonCancelled){
+          System.out.println("Scheduling request processor by:"+Thread.currentThread().getName())
 
           val nextRequest = listener.nextRequest()
+          nextRequest.map(f => {
+            respond(f._2, ct, handler(f._1))
 
-          blocking {
-            nextRequest
-          }
+            Future{runFuture(Future{})}
 
-        }
+          })
 
+        })
       }
 
-    }
+      runFuture(Future{})
 
+    }
   }
 
 
@@ -159,7 +164,7 @@ object NodeScala {
   object Listener {
     class Default(val port: Int, val relativePath: String) extends Listener {
       private val s = HttpServer.create(new InetSocketAddress(port), 0)
-      private val executor = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue)
+      private val executor = new ThreadPoolExecutor(1, 4, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue)
       s.setExecutor(executor)
 
       def start() = {
@@ -173,7 +178,11 @@ object NodeScala {
       }
 
       def createContext(handler: Exchange => Unit) = s.createContext(relativePath, new HttpHandler {
-        def handle(httpxchg: HttpExchange) = handler(Exchange(httpxchg))
+
+        def handle(httpxchg: HttpExchange) = {
+          handler(Exchange(httpxchg))
+          System.out.println("Request handled by:"+Thread.currentThread().getName())
+        }
       })
 
       def removeContext() = s.removeContext(relativePath)

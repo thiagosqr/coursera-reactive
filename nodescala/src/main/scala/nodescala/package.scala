@@ -47,14 +47,22 @@ package object nodescala {
      */
     def any[T](fs: List[Future[T]]): Future[T] = {
       val p = Promise[T]()
-      fs.foreach(f => f.onComplete { p.tryComplete(_) })
+      fs.foreach(f => f.onComplete {
+        p.tryComplete(_)
+      })
       p.future
     }
 
     /** Returns a future with a unit value that is completed after time `t`.
      */
     def delay(t: Duration): Future[Unit] = {
-      Await.ready(Future{}, t)
+      Await.ready(Future{
+         blocking{
+           while(true){
+             Thread.sleep(20000)
+           }
+         }
+      }, t)
     }
 
     /** Completes this future with user input.

@@ -80,7 +80,7 @@ class NodeScalaSuite extends FunSuite {
 
       working.unsubscribe()
 
-    }, 500 millis)
+    }, 100 millis)
 
     assert(isCancelled)
 
@@ -157,7 +157,7 @@ class NodeScalaSuite extends FunSuite {
 
     def test(req: Request) {
       val webpage = dummy.emit("/testDir", req)
-      val content = Await.result(webpage.loaded.future, 1 second)
+      val content = Await.result(webpage.loaded.future, 30 second)
       val expected = (for (kv <- req.iterator) yield (kv + "\n").toString).mkString
       assert(content == expected, s"'$content' vs. '$expected'")
     }
