@@ -1,6 +1,8 @@
 package suggestions
 package gui
 
+import rx.lang.scala.schedulers.ComputationScheduler
+
 import scala.language.postfixOps
 import scala.collection.mutable.ListBuffer
 import scala.collection.JavaConverters._
@@ -61,7 +63,18 @@ trait WikipediaApi {
      *
      * Note: uses the existing combinators on observables.
      */
-    def timedOut(totalSec: Long): Observable[T] = ???
+    def timedOut(totalSec: Long): Observable[T] = {
+
+      val timedOutObs = obs.take(totalSec seconds)
+//      obs.doOnCompleted {
+//
+//        timedOutObs.
+//
+//      }
+
+      timedOutObs
+
+    }
 
     /** Given a stream of events `obs` and a method `requestMethod` to map a request `T` into
      * a stream of responses `S`, returns a stream of all the responses wrapped into a `Try`.
@@ -88,7 +101,12 @@ trait WikipediaApi {
      *
      * Observable(Success(1), Succeess(1), Succeess(1), Succeess(2), Succeess(2), Succeess(2), Succeess(3), Succeess(3), Succeess(3))
      */
-    def concatRecovered[S](requestMethod: T => Observable[S]): Observable[Try[S]] = ???
+    def concatRecovered[S](requestMethod: T => Observable[S]): Observable[Try[S]] = {
+
+      obs.map(t => requestMethod.apply(t))
+
+
+    }
 
   }
 

@@ -4,6 +4,7 @@ package suggestions
 
 import scala.collection._
 import scala.concurrent._
+import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Try, Success, Failure}
 import scala.swing.event.Event
@@ -87,5 +88,6 @@ class SwingApiTest extends FunSuite {
 
     assert(observed == Seq("T", "Tu", "Tur", "Turi", "Turin", "Turing"), observed)
   }
+
 
 }
