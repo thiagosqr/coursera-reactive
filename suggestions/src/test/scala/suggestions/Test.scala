@@ -16,10 +16,10 @@ object Test {
     Observable
       .interval(1 seconds)
       .take(4 seconds)
-      .doOnNext(l => if (l > 2) throw new RuntimeException )
+//      .doOnNext(l => if (l > 2) throw new RuntimeException )
       .take(5 seconds)
       .doOnCompleted(println("Completed without error"))
-      .onErrorResumeNext(e => Observable.interval(1 seconds).)
+      .onErrorResumeNext(e => Observable.interval(1 seconds))
 //      .doOnError(e => println(e))
       .subscribe{
         o => println(o)
