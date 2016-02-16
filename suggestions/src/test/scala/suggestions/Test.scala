@@ -19,10 +19,11 @@ object Test {
 //      .take(4 seconds)
       .doOnNext(l => if (l > 2) throw new RuntimeException )
       .take(5 seconds)
-      .doOnCompleted(println("Completed without error"))
 //      .onErrorResumeNext(e => Observable.interval(1 seconds))
-//      .doOnError(e => println(e))
-        .onErrorReturn(t => 0)
+//      .doOnNext(l => if (l > 2) throw new RuntimeException )
+      .doOnCompleted(println("Completed without error"))
+      .onErrorResumeNext(Observable.just(100))
+//      .onErrorReturn(t => 0)
       .subscribe{
         o => println(o)
       }

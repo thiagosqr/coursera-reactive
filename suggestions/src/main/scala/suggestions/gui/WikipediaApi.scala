@@ -46,34 +46,35 @@ trait WikipediaApi {
   implicit class ObservableOps[T](obs: Observable[T]) {
 
     /** Given an observable that can possibly be completed with an error, returns a new observable
-     * with the same values wrapped into `Success` and the potential error wrapped into `Failure`.
-     *
-     * E.g. `1, 2, 3, !Exception!` should become `Success(1), Success(2), Success(3), Failure(Exception), !TerminateStream!`
-     */
+      * with the same values wrapped into `Success` and the potential error wrapped into `Failure`.
+      *
+      * E.g. `1, 2, 3, !Exception!` should become `Success(1), Success(2), Success(3), Failure(Exception), !TerminateStream!`
+      */
     def recovered: Observable[Try[T]] = {
       obs.map(el => Success(el)).onErrorReturn(e => Failure(e))
     }
 
     /** Emits the events from the `obs` observable, until `totalSec` seconds have elapsed.
-     *
-     * After `totalSec` seconds, if `obs` is not yet completed, the result observable becomes completed.
-     *
-     * Note: uses the existing combinators on observables.
-     */
+      *
+      * After `totalSec` seconds, if `obs` is not yet completed, the result observable becomes completed.
+      *
+      * Note: uses the existing combinators on observables.
+      */
     def timedOut(totalSec: Long): Observable[T] = {
 
       val timedOutObs = obs.take(totalSec seconds)
-//      obs.doOnCompleted {
-//
-//        timedOutObs.
-//
-//      }
+      //      obs.doOnCompleted {
+      //
+      //        timedOutObs.
+      //
+      //      }
 
       timedOutObs
 
     }
 
     /** Given a stream of events `obs` and a method `requestMethod` to map a request `T` into
+<<<<<<< HEAD
      * a stream of responses `S`, returns a stream of all the responses wrapped into a `Try`.
      * The elements of the response stream should reflect the order of their corresponding events in `obs`.
      *
@@ -98,18 +99,13 @@ trait WikipediaApi {
      *
      * Observable(Success(1), Succeess(1), Succeess(1), Succeess(2), Succeess(2), Succeess(2), Succeess(3), Succeess(3), Succeess(3))
      */
-    def concatRecovered[S](requestMethod: T => Observable[S]): Observable[Try[S]] =
-    {
+    def concatRecovered[S](requestMethod: T => Observable[S]): Observable[Try[S]] = {
 
       val responses = obs.map(t =>  requestMethod.apply(t))
-
-
-      responses.flatMap(o => o.map(Success(_))).onErrorReturn(t => Failure(t))
-
+      responses.flatMap(o => o.map(Success(_)).onErrorResumeNext(Observable.just(Failure(new Exception))))
 
     }
 
   }
-
 }
 

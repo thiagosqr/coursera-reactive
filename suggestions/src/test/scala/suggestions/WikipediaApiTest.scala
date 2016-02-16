@@ -68,23 +68,30 @@ class WikipediaApiTest extends FunSuite {
     assert(total == (1 + 1 + 2 + 1 + 2 + 3), s"Sum: $total")
   }
 
-  test("WikipediaApi should correctly use recovered") {
+  test("WikipediaApi should correctly use concatRecovered with error") {
 
-    val requests = Observable.just(1, 2, 3, 4).doOnEach(n => if(n == 4) throw new Exception)
+    val requests = Observable.just(1, 2, 3, 4, 5)
 
-    val responses = requests recovered
+    val function = (n: Int) => if(n == 4) Observable.error(new Exception) else Observable.just(n)
+
+    val responses = requests concatRecovered function
 
     var shoudlPass = false
 
-    responses.subscribe(obsrv =>
-      obsrv match {
+    responses.subscribe { o =>
+
+      println(o)
+
+      o match {
+        case Success(5) => shoudlPass = true
         case Success(n) => shoudlPass = false
-        case Failure(t) => shoudlPass = true
+        case Failure(t) => shoudlPass = false
       }
-    )
+    }
 
     assert(shoudlPass)
 
   }
+
 
 }
