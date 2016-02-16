@@ -4,6 +4,7 @@ package gui
 import scala.collection.mutable.ListBuffer
 import scala.collection.JavaConverters._
 import scala.concurrent._
+import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.swing._
 import scala.util.{ Try, Success, Failure }
@@ -81,10 +82,23 @@ object WikipediaSuggest extends SimpleSwingApplication with ConcreteSwingApi wit
      */
 
     // TO IMPLEMENT
-    val searchTerms: Observable[String] = ???
-
+    val searchTerms: Observable[String] = searchTermField.textValues
     // TO IMPLEMENT
-    val suggestions: Observable[Try[List[String]]] = ???
+    val suggestions: Observable[Try[List[String]]] = searchTerms.map{
+
+      s => {
+
+        val response = wikipediaSuggestion(s)
+          .map(rs => Success(rs))
+          .recover{
+            case t: Throwable => Failure(t)
+          }
+
+        Await.result(response, 5 seconds)
+
+      }
+
+    }
 
     // TO IMPLEMENT
     val suggestionSubscription: Subscription =  suggestions.observeOn(eventScheduler) subscribe {
