@@ -94,7 +94,7 @@ object WikipediaSuggest extends SimpleSwingApplication with ConcreteSwingApi wit
             case t: Throwable => Failure(t)
           }
 
-        Await.result(response, 5 seconds)
+        Await.result(response, 3 seconds)
 
       }
 
@@ -102,11 +102,28 @@ object WikipediaSuggest extends SimpleSwingApplication with ConcreteSwingApi wit
 
     // TO IMPLEMENT
     val suggestionSubscription: Subscription =  suggestions.observeOn(eventScheduler) subscribe {
-      x => ???
+      x => x match {
+        case Success(l) => suggestionList.listData_=(l)
+        case Failure(e) => suggestionList.listData_=(List(e.getMessage))
+      }
     }
 
     // TO IMPLEMENT
-    val selections: Observable[String] = ???
+    val selections: Observable[String] =
+      button.clicks.filter(b => suggestionList.selection.items.length > 0).map {
+      b => {
+
+        val selectedItem = suggestionList.selection.items.take(1)
+
+        val response = wikipediaPage(selectedItem(0))
+          .recover{
+            case t: Throwable => t.getMessage
+          }
+
+        Await.result(response, 3 seconds)
+
+      }
+    }
 
     // TO IMPLEMENT
     val pages: Observable[Try[String]] = ???
