@@ -98,11 +98,12 @@ object Search {
 
   def wikipediaSuggestionRetrofit(term: String): Future[List[String]] = {
     async {
+      println(s"Searching for term $term")
       val (cb, f) = callbackFuture[Array[AnyRef]]
       service.suggestions(term, cb)
       val result = await { f }
       val arraylist = result(1).asInstanceOf[java.util.List[String]]
-      
+
       arraylist.asScala.toList
     }
   }
